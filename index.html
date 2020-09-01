@@ -10,8 +10,39 @@
   </div>
 
 <script>
+    //speechrecognition is a global variables that is available on top of the window
   window.SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
 
+  //create a new instance of speechrecognition
+  const recognition = new SpeechRecognition();
+  //allows to set a live recognition
+  recognition.interimResults = true;
+
+  //todo: create a new paragraph everytime i finished speaking
+  let p = document.createElement('p');
+  const words = document.querySelector('.words');
+    words.appendChild(p);
+
+  recognition.addEventListener('result',  e => {
+      
+      const transcript = Array.from(e.results)
+      // get the transcript from the nested array
+      .map(result => result[0])
+      .map(result => result.transcript)
+      .join('')
+      console.log(transcript);
+      p.textContent = transcript;
+      //when i talk again it adds extra paragraphs
+      if (e.results[0].isFinal) {
+          p = document.createElement('p');
+          words.appendChild(p);
+      }
+      if(transcript.includes('unicorn')) {
+          alert('are you an unicorn?')
+      }
+    });
+    recognition.addEventListener('end', recognition.start);
+  recognition.start();
 
 </script>
 
